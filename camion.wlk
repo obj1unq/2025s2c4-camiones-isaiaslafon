@@ -70,4 +70,47 @@ object camion {
 	method sufrirAccidente(){
 		carga.forEach({ cosa => cosa.serImpactado() })
 	}
+
+	method transportar(destino, camino){
+		self.validarTransportar(camino)
+		
+		destino.almacenar(self)
+		//self.descargar() //se lo indica el almacen al almacenar. 
+	}
+
+	method validarTransportar(camino){
+		if(not camino.puedeSoportar(self)){
+			self.error("No puede circular por este camino")
+		}
+	}
+}
+
+
+object almacen{
+	const property deposito = #{}
+
+	method deposito() = deposito
+
+	method almacenar(transporte){
+		deposito.addAll(transporte.carga())
+		//puede encargarse de indicarle al trasnporte que se vacie, o delegar al transprote que se vacie al usar el almacen.
+		transporte.descargar()
+	}	
+
+}
+
+object ruta9{
+
+	method puedeSoportar(transporte)= transporte.puedeCircular(20)
+}
+
+
+object caminosVecinales{
+	var pesoMaximo = 0
+
+	method pesoMaximo(_pesoMaximo){
+		pesoMaximo = _pesoMaximo
+	}
+
+    method puedeSoportar(transporte)= transporte.peso() <= pesoMaximo
 }
